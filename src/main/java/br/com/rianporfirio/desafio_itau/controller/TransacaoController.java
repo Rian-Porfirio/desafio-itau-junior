@@ -5,10 +5,7 @@ import br.com.rianporfirio.desafio_itau.service.TransacaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/transacao")
@@ -28,5 +25,11 @@ public class TransacaoController {
     } catch (ValidationException ex) {
       throw new ValidationException();
     }
+  }
+
+  @DeleteMapping
+  public ResponseEntity<TransacaoDto> delete() {
+    transacaoService.delete();
+    return ResponseEntity.ok().build();
   }
 }

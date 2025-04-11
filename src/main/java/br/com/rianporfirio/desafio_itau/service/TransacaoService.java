@@ -17,4 +17,8 @@ public class TransacaoService {
   public void create(TransacaoDto transacaoDto) {
     transacoes.add(new Transacao(transacaoDto.valor(), transacaoDto.dataHora()));
   }
+
+  public void delete() {
+    transacoes.clear();
+  }
 }
