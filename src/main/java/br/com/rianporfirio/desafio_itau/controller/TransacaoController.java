@@ -1,6 +1,7 @@
 package br.com.rianporfirio.desafio_itau.controller;
 
 import br.com.rianporfirio.desafio_itau.dto.TransacaoDto;
+import br.com.rianporfirio.desafio_itau.dto.TransacaoEstatisticasDto;
 import br.com.rianporfirio.desafio_itau.service.TransacaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
@@ -31,5 +32,10 @@ public class TransacaoController {
   public ResponseEntity<TransacaoDto> delete() {
     transacaoService.delete();
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/estatistica")
+  public ResponseEntity<TransacaoEstatisticasDto> get() {
+    return ResponseEntity.ok(transacaoService.getEstatisticas());
   }
 }
