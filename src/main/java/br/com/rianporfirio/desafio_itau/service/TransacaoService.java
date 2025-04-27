@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.rianporfirio.desafio_itau.dto.TransacaoEstatisticasDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class TransacaoService {
 
@@ -21,28 +23,35 @@ public class TransacaoService {
 
   public void create(TransacaoDto transacaoDto) {
     transacoes.add(new Transacao(transacaoDto.valor(), transacaoDto.dataHora()));
+    log.info("Transação criada: valor= {}, dataHora= {}", transacaoDto.valor(), transacaoDto.dataHora());
   }
 
   public void delete() {
     transacoes.clear();
+    log.info("Todas as transações foram removidas com sucesso.");
   }
 
   public TransacaoEstatisticasDto getEstatisticas() {
-    var transacoesUltimoMinuto = getTransacoesFeitasNoUltimoMinuto();
+    var transacoesColetadas = getTransacoesRegistradasEmTempoInformado();
     var estatisticas =
-            transacoesUltimoMinuto
+            transacoesColetadas
             .stream()
             .collect(Collectors.summarizingDouble(Transacao::getValor));
 
-    if (transacoesUltimoMinuto.isEmpty()) {
+    if (transacoesColetadas.isEmpty()) {
+      log.warn("Nenhuma transação encontrada no tempo informado.");
       return new TransacaoEstatisticasDto();
     } else {
+      log.info("Calculando estatísticas para {} transações feitas nos ultimos {} segundos.", transacoesColetadas.size(), 60);
+      log.info("Estatísticas calculadas: soma= {}, média= {}, min= {}, max= {}",
+              estatisticas.getSum(), estatisticas.getAverage(), estatisticas.getMin(), estatisticas.getMax());
       return new TransacaoEstatisticasDto(estatisticas);
     }
   }
 
-  public List<Transacao> getTransacoesFeitasNoUltimoMinuto() {
+  public List<Transacao> getTransacoesRegistradasEmTempoInformado() {
     OffsetDateTime horarioLimiteBusca = OffsetDateTime.now().minusSeconds(60);
+    log.info("Realizando buscas de transações");
     return transacoes
             .stream()
             .filter(t -> t.getDataHora().isAfter(horarioLimiteBusca))
