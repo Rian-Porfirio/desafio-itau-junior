@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import br.com.rianporfirio.desafio_itau.dto.TransacaoEstatisticasDto;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class TransacaoService {
     log.info("Todas as transações foram removidas com sucesso.");
   }
 
+  @Timed(value = "transacao.geracao.estatisticas.tempo", description = "Tempo para calcular estatísticas de transações")
   public TransacaoEstatisticasDto getEstatisticas() {
     var transacoesColetadas = getTransacoesRegistradasEmTempoInformado();
     var estatisticas =
@@ -49,6 +51,7 @@ public class TransacaoService {
     }
   }
 
+  @Timed(value = "transacao.busca.transacoes.para.estatistica", description = "Tempo para realizar a busca de das transações no tempo informado")
   public List<Transacao> getTransacoesRegistradasEmTempoInformado() {
     OffsetDateTime horarioLimiteBusca = OffsetDateTime.now().minusSeconds(60);
     log.info("Realizando buscas de transações");
