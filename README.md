@@ -1,93 +1,93 @@
-# Itaú Unibanco - Desafio de Programação
+<center><h1>Desafio Júnior Itaú: API de Transações</h1></center>
 
-Este é um desafio bacana tanto de desenvolvimento de software quanto de engenharia de software. Queremos testar sua capacidade de construir um software com várias partes diferentes funcionando em conjunto!
+<center>
+<img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white">
+<img src="https://img.shields.io/badge/apachemaven-C71A36.svg?style=for-the-badge&logo=apachemaven&logoColor=white">
+<img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white">
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+<img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=for-the-badge&logo=swagger&logoColor=white">
+<img src="https://img.shields.io/badge/grafana-%23F46800.svg?style=for-the-badge&logo=grafana&logoColor=white"/>
+<img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white">
+<img src="https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=Prometheus&logoColor=white">
+</center>
 
-## 1. Introdução
+## Tópicos
 
-Sua missão, caso você aceite, é criar uma API REST que recebe Transações e retorna Estatísticas sob essas transações. Para este desafio, a API deve ser criada utilizando-se de Java ou [Kotlin](https://kotlinlang.org/) e Spring Boot.
+- [Descrição do projeto](#descrição-do-projeto)
 
-Um bom lugar para se começar é o [Spring Starter](https://start.spring.io/).
+- [Instruções da API](#instruções-da-api)
 
->**Dica:** Não existe uma forma certa ou errada de resolver o desafio! Vamos avaliar coisas como a qualidade do seu código, o quão fácil é de compreender o código, organização do projeto, quantidade e qualidade dos testes, preocupação com segurança e vários outros fatores :)
+- [Endpoints](#Endpoints)
 
-## 2. Definição do desafio
+- [Como rodar este projeto](#como-rodar-este-projeto)
 
-Neste desafio você deve **criar uma API REST** no [GitHub](https://github.com/) ou [GitLab](https://gitlab.com/). **Leia com atenção todas as instruções a seguir!**
+## Descrição do projeto
 
-### 2.1. Restrições Técnicas
+Este é um desafio de programação a nível júnior estruturado pelo itaú que visa testar a capacidade do desenvolvedor em construir um software com várias partes diferentes funcionando em conjunto. 
 
-Seu projeto:
+A tarefa dada é o desenvolvimento de uma **API REST** que recebe **Transações** e retorna **Estatísticas** sob essas transações.
 
-- **DEVE** estar no [GitHub](https://github.com/) ou [GitLab](https://gitlab.com/)
-- **NÃO DEVE** fazer _fork_ de nenhum outro projeto
-- **DEVE** ter pelo menos 1 commit por cada endpoint (mínimo de 3 commits)
-  - Queremos ver a evolução do seu projeto com o tempo ;)
-- Todos os commits **DEVEM** ser feitos pelo mesmo usuário que criou o projeto
-  - Entendemos que algumas pessoas tem usuários pessoais e profissionais, ou um usuário diferente usado para estudar. Atenção com isso se você for uma dessas pessoas!
-- **DEVE** seguir exatamente os _endpoints_ descritos a seguir
-  - Por exemplo, `/transacao` não é a mesma coisa que `/transacoes`
-- **DEVE** aceitar e responder com objetos exatamente como descritos a seguir
-  - Por exemplo, `dataHora` não é a mesma coisa que `data-hora` ou `dtTransacao`
-- **NÃO DEVE** utilizar quaisquer sistemas de banco de dados (como H2, MySQL, PostgreSQL, ...) ou cache (como Redis, Memcached, Infinispan, ...)
-- **DEVE** armazenar todos os dados **em memória**
-- **DEVE** aceitar e responder apenas com [JSON](https://www.json.org/json-pt.html)
+## Instruções da API
 
->**Atenção!** Por motivos de segurança, não podemos aceitar projetos enviados como arquivos. Você **DEVE** disponibilizar seu projeto publicamente para que possamos acessá-lo e corrigi-lo! Após receber uma resposta de nós, sinta-se livre para tornar seu projeto **privado** :)
+### 1. **Receber Transações**
+- **Requisitos dos Dados**:
+    - A transação deve conter os campos **valor** (decimal com ponto flutuante) e **dataHora** (data/hora no formato ISO 8601).
+    - O valor da transação deve ser **positivo ou zero** (não pode ser negativo).
+    - A transação deve ter ocorrido no **passado** (não pode ter data/hora no futuro).
 
-### 2.2. Endpoints da API
+- **Respostas Esperadas**:
+    - **201 Created**: Quando a transação for aceita (dados válidos).
+    - **422 Unprocessable Entity**: Quando algum critério não for atendido (ex: valor negativo ou data futura).
+    - **400 Bad Request**: Quando o JSON estiver malformado ou inválido.
 
-A seguir serão especificados os endpoints que devem estar presentes na sua API e a funcionalidade esperada de cada um deles.
+### 2. **Limpar Transações**
+- **Funcionalidade**: Apaga todas as transações armazenadas.
 
-#### 2.2.1. Receber Transações: `POST /transacao`
+- **Resposta Esperada**:
+    - **200 OK**: Quando as transações forem apagadas com sucesso.
 
-Este é o endpoint que irá receber as Transações. Cada transação consiste de um `valor` e uma `dataHora` de quando ela aconteceu:
+### 3. **Calcular Estatísticas**
+- **Critérios**:
+    - As estatísticas são baseadas nas **transações dos últimos 60 segundos**.
 
-```json
+- **Cálculos**:
+    - **count**: Número de transações nos últimos 60 segundos.
+    - **sum**: Soma total dos valores transacionados nos últimos 60 segundos.
+    - **avg**: Média dos valores transacionados nos últimos 60 segundos.
+    - **min**: Menor valor transacionado nos últimos 60 segundos.
+    - **max**: Maior valor transacionado nos últimos 60 segundos.
+
+- **Resposta Esperada**:
+    - **200 OK**: Retorna um JSON com as estatísticas (count, sum, avg, min, max) ou valores zerados (se não houver transações no intervalo).
+
+
+## Endpoints
+
+- ### POST /transacao
+
+  - **Este endpoint realiza o cadastro de uma nova transação que deve obrigatóriamente ser realizada em uma data não futura
+  e no formato ISO 8601**
+  - **Valor ``double``**
+  - **dataHora ``OffSetDateTime``** 
+
+ ```json
 {
     "valor": 123.45,
-    "dataHora": "2020-08-07T12:34:56.789-03:00"
+    "dataHora": "ano-mes-diaThora:minutos:segundos.789-03:00 <- fuso para horário de brasília"
 }
 ```
 
-Os campos no JSON acima significam o seguinte:
+- ### DELETE /transacao
 
-| Campo      | Significado                                                   | Obrigatório? |
-|------------|---------------------------------------------------------------|--------------|
-| `valor`    | **Valor em decimal com ponto flutuante** da transação         | Sim          |
-| `dataHora` | **Data/Hora no padrão ISO 8601** em que a transação aconteceu | Sim          |
+  - **Este endpoint realiza a limpeza completa de todas as transações realizadas durante o funcionamento da API**
 
->**Dica:** O Spring Boot, por padrão, consegue compreender datas no padrão ISO 8601 sem problemas. Experimente utilizar um atributo do tipo `OffsetDateTime`!
+- ### GET /estatística
+  
+  - **Este endpoint retorna as estatísticas de todas as transações realizadas em um intervalo de tempo. Não é retornado apenas as transações nos últimos 60 segundos, pois um dos extras era tornar este intervalo de tempo a escolha do usuário.**
+  - **Padrão: 60 segundo**
+  - **Intervalo Dinâmico: ``localhost:8080/transacao/estatistica?intervaloEmSegundos=(definir tempo)``**
 
-A API só aceitará transações que:
-
-1. Tenham os campos `valor` e `dataHora` preenchidos
-2. A transação **NÃO DEVE** acontecer no futuro
-3. A transação **DEVE** ter acontecido a qualquer momento no passado
-4. A transação **NÃO DEVE** ter valor negativo
-5. A transação **DEVE** ter valor igual ou maior que `0` (zero)
-
-Como resposta, espera-se que este endpoint responda com:
-
-- `201 Created` sem nenhum corpo
-  - A transação foi aceita (ou seja foi validada, está válida e foi registrada)
-- `422 Unprocessable Entity` sem nenhum corpo
-  - A transação **não** foi aceita por qualquer motivo (1 ou mais dos critérios de aceite não foram atendidos - por exemplo: uma transação com valor menor que `0`)
-- `400 Bad Request` sem nenhum corpo
-  - A API não compreendeu a requisição do cliente (por exemplo: um JSON inválido)
-
-#### 2.2.2. Limpar Transações: `DELETE /transacao`
-
-Este endpoint simplesmente **apaga todos os dados de transações** que estejam armazenados.
-
-Como resposta, espera-se que este endpoint responda com:
-
-- `200 OK` sem nenhum corpo
-  - Todas as informações foram apagadas com sucesso
-
-#### 2.2.3. Calcular Estatísticas: `GET /estatistica`
-
-Este endpoint deve retornar estatísticas das transações que **aconteceram nos últimos 60 segundos (1 minuto)**. As estatísticas que devem ser calculadas são:
-
+**Retorno deste endpoint: ``DoubleSummaryStatistics``**
 ```json
 {
     "count": 10,
@@ -98,34 +98,32 @@ Este endpoint deve retornar estatísticas das transações que **aconteceram nos
 }
 ```
 
-Os campos no JSON acima significam o seguinte:
+## Como rodar este projeto
 
-|  Campo  | Significado                                                   | Obrigatório? |
-|---------|---------------------------------------------------------------|--------------|
-| `count` | **Quantidade de transações** nos últimos 60 segundos          | Sim          |
-| `sum`   | **Soma total do valor** transacionado nos últimos 60 segundos | Sim          |
-| `avg`   | **Média do valor** transacionado nos últimos 60 segundos      | Sim          |
-| `min`   | **Menor valor** transacionado nos últimos 60 segundos         | Sim          |
-| `max`   | **Maior valor** transacionado nos últimos 60 segundos         | Sim          |
 
->**Dica:** Há um objeto no Java 8+ chamado `DoubleSummaryStatistics` que pode lhe ajudar ou servir de inspiração.
+### Requisitos:
+ - Java 17+
+ - Docker desktop
+ - IDE de sua preferência
+ - Postman (opcional)
 
-Como resposta, espera-se que este endpoint responda com:
+#### 1- Clone este repositório ``git clone https://github.com/Rian-Porfirio/desafio-itau-junior.git``
 
-- `200 OK` com os dados das estatísticas
-  - Um JSON com os campos `count`, `sum`, `avg`, `min` e `max` todos preenchidos com seus respectivos valores
-  - **Atenção!** Quando não houverem transações nos últimos 60 segundos considere todos os valores como `0` (zero)
+#### 2- Rode o projeto de preferência em modo debug
 
-## 4. Extras
+#### 3- Com o projeto rodando, acesse a seguinte URL: ``http://localhost:8080/swagger-ui/index.html#/``
 
-Vamos propôr a seguir alguns desafios extras caso você queira testar seus conhecimentos ao máximo! Nenhum desses requisitos é obrigatório, mas são desejados e podem ser um diferencial!
+#### 4- Utilize o json já mostrado em [Endpoints](#endpoints) neste README para registrar as transações
 
-1. **Testes automatizados:** Sejam unitários e/ou funcionais, testes automatizados são importantes e ajudam a evitar problemas no futuro. Se você fizer testes automatizados, atente-se na efetividade dos seus testes! Por exemplo, testar apenas os "caminhos felizes" não é muito efetivo.
-2. **Containerização:** Você consegue criar meios para disponibilizar sua aplicação como um container? _OBS: Não é necessário publicar o container da sua aplicação!_
-3. **Logs:** Sua aplicação informa o que está acontecendo enquanto ela trabalha? Isso é útil para ajudar as pessoas desenvolvedoras a solucionar eventuais problemas que possam ocorrer.
-4. **Observabilidade:** Sua API tem algum endpoint para verificação da saúde da aplicação (healthcheck)?
-5. **Performance:** Você consegue estimar quanto tempo sua aplicação gasta para calcular as estatísticas?
-6. **Tratamento de Erros:** O Spring Boot dá às pessoas desenvolvedoras ferramentas para se melhorar o tratamento de erros padrão. Você consegue alterar os erros padrão para retornar _quais_ erros ocorreram?
-7. **Documentação da API:** Você consegue documentar sua API? Existem [ferramentas](https://swagger.io/) e [padrões](http://raml.org/) que podem te ajudar com isso!
-8. **Documentação do Sistema:** Sua aplicação provavelmente precisa ser construída antes de ser executada. Você consegue documentar como outra pessoa que pegou sua aplicação pela primeira vez pode construir e executar sua aplicação?
-9. **Configurações:** Você consegue deixar sua aplicação configurável em relação a quantidade de segundos para calcular as estatísticas? Por exemplo: o padrão é 60 segundos, mas e se o usuário quiser 120 segundos?
+
+## Utilizando observabilidade
+
+#### 1- Abra o docker desktop
+
+#### 2- No terminal do projeto, rode o seguinte comando``docker-compose up`` isso irá baixar as imagens presentes no arquivo **docker-compose.yml**
+
+#### 3- Com as imagens baixadas, você pode acessar ambas as ferramentas prometheus e grafana
+##### Grafana: ``localhost:3000``
+##### Prometheus: ``localhost:9090``
+#### Irei trazer instruções de como realizar testes na API com estas ferramentas. Veja em [Rian Porfírio](https://www.linkedin.com/in/rian-porfírio)
+
