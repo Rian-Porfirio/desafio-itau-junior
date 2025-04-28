@@ -41,8 +41,12 @@ public class TransacaoController {
   }
 
   @GetMapping("/estatistica")
-  public ResponseEntity<TransacaoEstatisticasDto> get() {
+  public ResponseEntity<TransacaoEstatisticasDto> get(
+      @RequestParam(
+              name = "intervaloEmSegundos",
+              defaultValue = "60")
+          int intervaloDeTempo) {
     log.info("Requisição recebida: gerar estatísticas sobre as transações registradas.");
-    return ResponseEntity.ok(transacaoService.getEstatisticas());
+    return ResponseEntity.ok(transacaoService.getEstatisticas(intervaloDeTempo));
   }
 }

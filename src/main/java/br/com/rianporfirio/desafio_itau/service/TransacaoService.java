@@ -23,6 +23,7 @@ public class TransacaoService {
   }
 
   public void create(TransacaoDto transacaoDto) {
+
     transacoes.add(new Transacao(transacaoDto.valor(), transacaoDto.dataHora()));
     log.info("Transação criada: valor= {}, dataHora= {}", transacaoDto.valor(), transacaoDto.dataHora());
   }
@@ -33,8 +34,8 @@ public class TransacaoService {
   }
 
   @Timed(value = "transacao.geracao.estatisticas.tempo", description = "Tempo para calcular estatísticas de transações")
-  public TransacaoEstatisticasDto getEstatisticas() {
-    var transacoesColetadas = getTransacoesRegistradasEmTempoInformado();
+  public TransacaoEstatisticasDto getEstatisticas(int intervaloEmSegundos) {
+    var transacoesColetadas = getTransacoesRegistradasEmTempoInformado(intervaloEmSegundos);
     var estatisticas =
             transacoesColetadas
             .stream()
@@ -44,20 +45,22 @@ public class TransacaoService {
       log.warn("Nenhuma transação encontrada no tempo informado.");
       return new TransacaoEstatisticasDto();
     } else {
-      log.info("Calculando estatísticas para {} transações feitas nos ultimos {} segundos.", transacoesColetadas.size(), 60);
-      log.info("Estatísticas calculadas: soma= {}, média= {}, min= {}, max= {}",
-              estatisticas.getSum(), estatisticas.getAverage(), estatisticas.getMin(), estatisticas.getMax());
+      log.info("Encontrado {} transações feitas nos últimos {} minutos e {} segundos.",
+              transacoesColetadas.size(), intervaloEmSegundos / 60, intervaloEmSegundos % 60);
+      log.info("Estatísticas calculadas: quantidade= {} soma= {}, média= {}, min= {}, max= {}",
+             estatisticas.getCount(), estatisticas.getSum(), estatisticas.getAverage(), estatisticas.getMin(), estatisticas.getMax());
       return new TransacaoEstatisticasDto(estatisticas);
     }
   }
 
   @Timed(value = "transacao.busca.transacoes.para.estatistica", description = "Tempo para realizar a busca de das transações no tempo informado")
-  public List<Transacao> getTransacoesRegistradasEmTempoInformado() {
-    OffsetDateTime horarioLimiteBusca = OffsetDateTime.now().minusSeconds(60);
+  public List<Transacao> getTransacoesRegistradasEmTempoInformado(int intervaloEmSegundos) {
+    OffsetDateTime horarioLimiteBusca = OffsetDateTime.now().minusSeconds(intervaloEmSegundos);
     log.info("Realizando buscas de transações");
     return transacoes
             .stream()
             .filter(t -> t.getDataHora().isAfter(horarioLimiteBusca))
             .toList();
   }
+
 }
