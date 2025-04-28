@@ -28,7 +28,7 @@ public class TransacaoController {
       transacaoService.create(transacaoDto);
       return ResponseEntity.status(HttpStatus.CREATED).build();
     } catch (ValidationException ex) {
-      log.warn("Requisição negada. Verificar motivo e corrigir.");
+      log.warn("Requisição negada. Erro: {}", ex.getMessage());
       throw new ValidationException();
     }
   }
@@ -40,13 +40,4 @@ public class TransacaoController {
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping("/estatistica")
-  public ResponseEntity<TransacaoEstatisticasDto> get(
-      @RequestParam(
-              name = "intervaloEmSegundos",
-              defaultValue = "60")
-          int intervaloDeTempo) {
-    log.info("Requisição recebida: gerar estatísticas sobre as transações registradas.");
-    return ResponseEntity.ok(transacaoService.getEstatisticas(intervaloDeTempo));
-  }
 }
