@@ -3,12 +3,11 @@ package br.com.rianporfirio.desafio_itau.service;
 import br.com.rianporfirio.desafio_itau.domain.model.Transacao;
 import br.com.rianporfirio.desafio_itau.dto.TransacaoEstatisticasDto;
 import io.micrometer.core.annotation.Timed;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service

@@ -1,7 +1,6 @@
 package br.com.rianporfirio.desafio_itau.controller;
 
 import br.com.rianporfirio.desafio_itau.dto.TransacaoDto;
-import br.com.rianporfirio.desafio_itau.dto.TransacaoEstatisticasDto;
 import br.com.rianporfirio.desafio_itau.service.TransacaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;

@@ -26,7 +26,7 @@ public class EstatisticasController {
                     name = "intervaloEmSegundos",
                     defaultValue = "60")
             int intervaloDeTempo) {
-        log.info("Requisição recebida: gerar estatísticas sobre as transações registradas.");
+        log.info("Requisição recebida: gerar estatísticas sobre as transações encontradas.");
         return ResponseEntity.ok(estatisticasService.getEstatisticas(intervaloDeTempo));
     }
 }
